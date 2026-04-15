@@ -1,0 +1,76 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Components.Web
+@namespace InglenookPuzzler.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="InglenookPuzzler.styles.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
+</head>
+<body>
+    <component type="typeof(App)" render-mode="ServerPrerendered" />
+
+    <div id="blazor-error-ui">
+        <environment include="Staging,Production">
+            An error has occurred. This application may no longer respond until reloaded.
+        </environment>
+        <environment include="Development">
+            An unhandled exception has occurred. See browser dev tools for details.
+        </environment>
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script src="lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="_framework/blazor.server.js"></script>
+    <script>
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-bs-theme', theme);
+            const btn = document.getElementById('theme-toggle');
+            if (btn) btn.innerText = theme === 'dark' ? '☀️ Light' : '🌙 Dark';
+        }
+
+        function getSystemTheme() {
+            return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function getSavedTheme() {
+            return localStorage.getItem('theme') ?? getSystemTheme();
+        }
+
+        applyTheme(getSavedTheme());
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+            applyTheme(e.matches ? 'dark' : 'light');
+        }
+        });
+
+        window.themeInterop = {
+            toggleTheme: () => {
+            const current = document.documentElement.getAttribute('data-bs-theme') ?? 'light';
+            const next = current === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('theme', next);
+            applyTheme(next);
+        },
+        getCurrentTheme: () => {
+            return document.documentElement.getAttribute('data-bs-theme') ?? getSavedTheme();
+        }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Blazor.addEventListener('enhancedload', () => {
+                applyTheme(getSavedTheme());
+            });
+        });
+    </script>
+</body>
+</html>

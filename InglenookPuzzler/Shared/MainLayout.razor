@@ -1,0 +1,43 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>InglenookPuzzler</PageTitle>
+
+<div class="container py-2 d-flex justify-content-between align-items-center">
+    <span class="fw-bold fs-5">🎬 InglenookPuzzler</span>
+    <button class="btn btn-sm btn-outline-secondary"
+            id="theme-toggle"
+            @onclick="ToggleTheme">
+        @(_isDark ? "☀️ Light" : "🌙 Dark")
+    </button>
+</div>
+
+
+<div class="page">
+    <main>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private bool _isDark;
+
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var theme = await JS.InvokeAsync<string>("window.themeInterop.getCurrentTheme");
+            _isDark = theme == "dark";
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        await JS.InvokeVoidAsync("window.themeInterop.toggleTheme");
+        _isDark = !_isDark;
+    }
+}
