@@ -33,13 +33,40 @@
         }
     </div>
 
-    <div class="card-footer d-flex gap-2">
-        <button class="btn btn-sm btn-outline-primary w-50" @onclick="() => OnEdit.InvokeAsync(Wagon)">
-            ✏️ Edit
+    <div class="card-footer d-flex justify-content-end gap-2">
+        <button class="btn btn-sm btn-outline-secondary" @onclick="() => OnEdit.InvokeAsync(Wagon)" title="Edit">
+            ✏️
         </button>
-        <button class="btn btn-sm btn-outline-danger w-50" @onclick="() => OnDelete.InvokeAsync(Wagon.Id)">
-            🗑️ Delete
+        <button class="btn btn-sm btn-outline-danger"
+                @onclick="() => _showConfirm = true"
+                title="Delete">
+            🗑️
         </button>
+
+        @if (_showConfirm)
+        {
+            <div class="modal fade show d-block" style="background:rgba(0,0,0,0.5);">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Delete Wagon</h5>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete <strong>@Wagon.Name @(!string.IsNullOrEmpty(Wagon.RollingStockNumber) ? Wagon.RollingStockNumber : "")</strong> ?</p>
+                            <p class="text-muted small">This action cannot be undone.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-secondary" @onclick="() => _showConfirm = false">
+                                Cancel
+                            </button>
+                            <button class="btn btn-danger" @onclick="DeleteConfirmed">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
@@ -47,21 +74,28 @@
     [Parameter, EditorRequired] public Wagon Wagon { get; set; } = default!;
     [Parameter] public EventCallback<Wagon> OnEdit { get; set; }
     [Parameter] public EventCallback<int> OnDelete { get; set; }
+    private bool _showConfirm;
+
+    private async Task DeleteConfirmed()
+    {
+        _showConfirm = false;
+        await OnDelete.InvokeAsync(Wagon.Id);
+    }
 
     private string GetDefaultImage()
     {
         return Wagon.WagonType?.Name.ToLower() switch
         {
-            "plank wagon" => "images/defaults/plank-wagon.svg",
-            "goods van" => "images/defaults/goods-van.svg",
-            "ventilated van" => "images/defaults/ventilated-van.svg",
-            "tank wagon" => "images/defaults/tank-wagon.svg",
-            "brake van" => "images/defaults/brake-van.svg",
-            "hopper wagon" => "images/defaults/hopper-wagon.svg",
-            "cattle wagon" => "images/defaults/cattle-wagon.svg",
-            "flat wagon" => "images/defaults/flat-wagon.svg",
-            "coal wagon" => "images/defaults/coal-wagon.svg",
-            _ => "images/defaults/default.svg"
+            "plank wagon" => "images/defaults/plank-wagon.png",
+            "goods van" => "images/defaults/goods-van.png",
+            "ventilated van" => "images/defaults/ventilated-van.png",
+            "tank wagon" => "images/defaults/tank-wagon.png",
+            "brake van" => "images/defaults/brake-van.png",
+            "hopper wagon" => "images/defaults/hopper-wagon.png",
+            "cattle wagon" => "images/defaults/cattle-wagon.png",
+            "flat wagon" => "images/defaults/flat-wagon.png",
+            "coal wagon" => "images/defaults/coal-wagon.png",
+            _ => "images/defaults/default.png"
         };
     }
 }

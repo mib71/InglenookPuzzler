@@ -1,9 +1,130 @@
 ﻿@page "/"
+@inject WagonService WagonService
+@inject PuzzleSessionService PuzzleSessionService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Inglenook Puzzler</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="row g-4 mb-4">
+    <div class="col-12">
+        <h1 class="mb-1">Plan. Shunt. Solve.</h1>
+        <p class="text-muted">Become the master of the yard. Simple rules. Surprisingly deep strategy.</p>
+        <img src="/images/front.png" />
+    </div>
+</div>
 
-Welcome to your new app.
+<div class="row g-4">
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <!-- COLLECTION STATS -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">🚃 Collection</div>
+            <div class="card-body">
+                @if (_loadingCollection)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <span class="fs-1 fw-bold">@_totalWagons</span>
+                        <span class="text-muted ms-2">wagons in collection</span>
+                    </div>
+                    @if (_wagonsByType.Any())
+                    {
+                        <table class="table table-sm">
+                            <tbody>
+                                @foreach (var (type, count) in _wagonsByType)
+                                {
+                                    <tr>
+                                        <td>@type</td>
+                                        <td class="text-end fw-bold">@count</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    <a href="/wagons" class="btn btn-sm btn-outline-secondary mt-2">View Collection</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- PUZZLE STATS -->
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">🎯 Puzzle Stats</div>
+            <div class="card-body">
+                @if (_loadingPuzzle)
+                {
+                    <p class="text-muted">Loading...</p>
+                }
+                else if (_totalSolved == 0)
+                {
+                    <p class="text-muted fst-italic">No puzzles solved yet. <a href="/puzzle/setup">Start one!</a></p>
+                }
+                else
+                {
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="fs-1 fw-bold">@_totalSolved</div>
+                                <div class="text-muted small">Puzzles solved</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="fs-1 fw-bold">@_bestMoves</div>
+                                <div class="text-muted small">Best score (moves)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-3 text-center">
+                            <div class="fs-1 fw-bold">@_averageMoves</div>
+                            <div class="text-muted small">Average moves</div>
+                        </div>
+                    </div>
+                    @if (_lastSolved is not null)
+                    {
+                        <div class="text-muted small">
+                            Last solved: @_lastSolved.CreatedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")
+                            — @_lastSolved.MoveCount moves
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private int _totalWagons;
+    private List<(string Type, int Count)> _wagonsByType = new();
+    private bool _loadingCollection = true;
+    private double _averageMoves;
+
+    private int _totalSolved;
+    private int _bestMoves;
+    private PuzzleSession? _lastSolved;
+    private bool _loadingPuzzle = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var wagons = await WagonService.GetAllAsync();
+        _totalWagons = wagons.Count;
+        _wagonsByType = wagons
+            .GroupBy(w => w.WagonType?.Name ?? "Unknown")
+            .Select(g => (g.Key, g.Count()))
+            .OrderByDescending(x => x.Item2)
+            .ToList();
+        _loadingCollection = false;
+
+        var sessions = await PuzzleSessionService.GetCompletedAsync();
+        _totalSolved = sessions.Count;
+        _bestMoves = sessions.Any() ? sessions.Min(s => s.MoveCount) : 0;
+        _lastSolved = sessions.FirstOrDefault();
+        _loadingPuzzle = false;
+        _averageMoves = sessions.Any() ? Math.Round(sessions.Average(s => s.MoveCount), 1) : 0;
+    }
+}

@@ -66,3 +66,28 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+[data-bs-theme="light"] .card {
+    border: 1px solid #dee2e6;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+[data-bs-theme="light"] .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+[data-bs-theme="light"] .border-warning {
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+[data-bs-theme="light"] .btn-outline-warning {
+    border-color: #b8860b;
+    color: #b8860b;
+}
+
+[data-bs-theme="light"] .btn-warning {
+    background-color: #e6a817;
+    border-color: #e6a817;
+}

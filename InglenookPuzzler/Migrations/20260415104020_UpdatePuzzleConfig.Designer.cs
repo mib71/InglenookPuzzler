@@ -4,6 +4,7 @@ using InglenookPuzzler.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InglenookPuzzler.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260415104020_UpdatePuzzleConfig")]
+    partial class UpdatePuzzleConfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,9 +142,6 @@ namespace InglenookPuzzler.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<int>("GoalWagons")
-                                .HasColumnType("int");
-
-                            b1.Property<int>("HeadshuntCapacity")
                                 .HasColumnType("int");
 
                             b1.Property<bool>("TimedMode")

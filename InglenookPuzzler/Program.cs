@@ -17,6 +17,9 @@ builder.Services.AddScoped<WagonTypeService>();
 builder.Services.AddScoped<EraService>();
 builder.Services.AddScoped<WagonService>();
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<PuzzleGenerator>();
+builder.Services.AddScoped<PuzzleEngine>();
+builder.Services.AddScoped<PuzzleSessionService>();
 
 var app = builder.Build();
 

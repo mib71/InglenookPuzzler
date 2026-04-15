@@ -1,0 +1,201 @@
+﻿@page "/puzzle/play"
+@inject PuzzleEngine PuzzleEngine
+@inject NavigationManager Nav
+@inject PuzzleSessionService PuzzleSessionService
+
+<PageTitle>Puzzle</PageTitle>
+
+@if (PuzzleEngine.IsCompleted)
+{
+    <div class="alert alert-success text-center">
+        <h4>🎉 Puzzle Solved!</h4>
+        <p>You completed the puzzle in <strong>@PuzzleEngine.MoveCount</strong> moves.</p>
+        <a href="/puzzle/setup" class="btn btn-success">New Puzzle</a>
+    </div>
+}
+
+<div class="d-flex justify-content-end align-items-center mb-4 gap-2">
+    <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-secondary fs-6">Moves: @PuzzleEngine.MoveCount</span>
+        <a href="/puzzle/setup" class="btn btn-sm btn-outline-secondary">↩ New Puzzle</a>
+    </div>
+</div>
+
+<!-- GOAL -->
+<div class="card mb-4">
+    <div class="card-header">🎯 Goal — Form this train on Track A (in order, left to right)</div>
+    <div class="card-body">
+        <div class="d-flex gap-2 flex-wrap">
+            @if (_wagons.Count == 0)
+            {
+                <span class="text-muted fst-italic">Loading...</span>
+            }
+            else
+            {
+                @foreach (var wagonId in PuzzleEngine.GetGoalWagonIds())
+                {
+                    var wagon = GetWagon(wagonId);
+                    <div class="text-center">
+                        <img src="@GetWagonImage(wagon)" style="height:60px;" />
+                        <div style="font-size:11px;">@wagon?.Name</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<!-- HEADSHUNT -->
+<div class="card mb-3 border-warning">
+    <div class="card-header bg-warning-subtle d-flex justify-content-between align-items-center">
+        <span>🚂 Headshunt (H) — @GetTrack("H").WagonIds.Count / @GetTrack("H").Capacity wagons</span>
+        <small class="text-muted">Loco buffer — move wagons via here</small>
+    </div>
+    <div class="card-body">
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+            @if (GetTrack("H").WagonIds.Count == 0)
+            {
+                <span class="text-muted fst-italic">Empty</span>
+            }
+            else
+            {
+                @foreach (var wagonId in GetTrack("H").WagonIds)
+                {
+                    var wagon = GetWagon(wagonId);
+                    <div class="text-center">
+                        <img src="@GetWagonImage(wagon)" style="height:70px;" />
+                        <div style="font-size:11px;">@wagon?.Name</div>
+                    </div>
+                }
+                <div class="ms-auto d-flex gap-2 flex-wrap">
+                    @foreach (var track in PuzzleEngine.Tracks.Where(t => t.TrackId != "H"))
+                    {
+                        var maxMove = Math.Min(GetTrack("H").WagonIds.Count, track.Capacity - track.WagonIds.Count);
+                        @for (int i = 1; i <= maxMove; i++)
+                        {
+                            var count = i;
+                            <button class="btn btn-sm btn-warning"
+                                    @onclick='() => MoveTo("H", track.TrackId, count)'>
+                                @count → @track.TrackId
+                            </button>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- SIDINGS A, B, C -->
+<div class="d-flex flex-column gap-3">
+    @foreach (var track in PuzzleEngine.Tracks.Where(t => t.TrackId != "H"))
+    {
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    Track @track.TrackId — @track.WagonIds.Count / @track.Capacity wagons
+                    @if (track.TrackId == "A" && PuzzleEngine.IsCompleted)
+                    {
+                        <span class="badge bg-success ms-2">✓ Goal!</span>
+                    }
+                </span>
+                @if (track.WagonIds.Count > 0)
+                {
+                    var maxMove = Math.Min(track.WagonIds.Count, GetTrack("H").Capacity - GetTrack("H").WagonIds.Count);
+                    <div class="d-flex gap-1">
+                        @for (int i = 1; i <= maxMove; i++)
+                        {
+                            var count = i;
+                            <button class="btn btn-sm btn-outline-warning"
+                                    @onclick='() => MoveTo(track.TrackId, "H", count)'>
+                                @count → H
+                            </button>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="card-body">
+                <div class="d-flex gap-2 flex-wrap">
+                    @if (track.WagonIds.Count == 0)
+                    {
+                        <span class="text-muted fst-italic">Empty</span>
+                    }
+                    @foreach (var wagonId in track.WagonIds)
+                    {
+                        var wagon = GetWagon(wagonId);
+                        <div class="text-center">
+                            <img src="@GetWagonImage(wagon)" style="height:70px;" />
+                            <div style="font-size:11px;">@wagon?.Name</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<Wagon> _wagons = new();
+
+    [Inject] WagonService WagonService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!PuzzleEngine.Tracks.Any())
+        {
+            Nav.NavigateTo("/puzzle/setup");
+            return;
+        }
+
+        _wagons = await WagonService.GetAllAsync();
+    }
+
+    private async Task MoveTo(string from, string to, int count)
+    {
+        PuzzleEngine.TryMoveMultiple(from, to, count);
+
+        if (PuzzleEngine.IsCompleted)
+            await SaveSessionAsync();
+    }
+
+    private async Task SaveSessionAsync()
+    {
+        var session = new PuzzleSession
+        {
+            CreatedAt = DateTime.UtcNow,
+            StartState = System.Text.Json.JsonSerializer.Serialize(PuzzleEngine.Tracks),
+            GoalState = System.Text.Json.JsonSerializer.Serialize(PuzzleEngine.GoalTracks),
+            MoveCount = PuzzleEngine.MoveCount,
+            IsCompleted = true,
+            Config = PuzzleEngine.Config
+        };
+
+        await PuzzleSessionService.SaveAsync(session);
+    }
+
+    private TrackState GetTrack(string trackId)
+        => PuzzleEngine.GetTrack(trackId) ?? new TrackState { TrackId = trackId };
+
+    private Wagon? GetWagon(int id)
+        => _wagons.FirstOrDefault(w => w.Id == id);
+
+    private string GetWagonImage(Wagon? wagon)
+    {
+        if (wagon is null) return "images/defaults/default.svg";
+        if (!string.IsNullOrEmpty(wagon.ImagePath)) return wagon.ImagePath;
+
+        return wagon.WagonType?.Name.ToLower() switch
+        {
+            "plank wagon" => "images/defaults/plank-wagon.png",
+            "goods van" => "images/defaults/goods-van.png",
+            "ventilated van" => "images/defaults/ventilated-van.png",
+            "tank wagon" => "images/defaults/tank-wagon.png",
+            "brake van" => "images/defaults/brake-van.png",
+            "hopper wagon" => "images/defaults/hopper-wagon.png",
+            "cattle wagon" => "images/defaults/cattle-wagon.png",
+            "flat wagon" => "images/defaults/flat-wagon.png",
+            "coal wagon" => "images/defaults/coal-wagon.png",
+            _ => "images/defaults/default.svg"
+        };
+    }
+}
