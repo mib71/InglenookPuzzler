@@ -22,7 +22,13 @@ public class EraService(AppDbContext db)
 
     public async Task UpdateAsync(Era era)
     {
-        _db.Eras.Update(era);
+        var existing = await _db.Eras.FindAsync(era.Id);
+        if (existing is null) return;
+
+        // EF Core tracks this automatically - no .Update() needed
+        existing.Name = era.Name;
+        existing.Description = era.Description;
+
         await _db.SaveChangesAsync();
     }
 

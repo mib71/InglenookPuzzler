@@ -1,0 +1,95 @@
+﻿@page "/wagons"
+@inject WagonService WagonService
+
+<PageTitle>Wagon Collection</PageTitle>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4>🚃 Wagon Collection</h4>
+    <button class="btn btn-primary" @onclick="ShowAddForm">
+        + Add Wagon
+    </button>
+</div>
+
+@if (_showForm)
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            @(_editingWagon is null ? "Add Wagon" : "Edit Wagon")
+        </div>
+        <div class="card-body">
+            <WagonForm EditModel="@_editingWagon"
+                       OnSaved="OnWagonSaved"
+                       OnCancelled="OnCancelled" />
+        </div>
+    </div>
+}
+
+@if (_wagons.Count == 0)
+{
+    <p class="text-muted">No wagons yet. Add your first wagon above!</p>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var wagon in _wagons)
+        {
+            <div class="col-md-4 col-lg-3">
+                <WagonCard Wagon="@wagon"
+                           OnEdit="EditWagon"
+                           OnDelete="DeleteWagon" />
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Wagon> _wagons = new();
+    private Wagon? _editingWagon;
+    private bool _showForm;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadWagons();
+    }
+
+    private async Task LoadWagons()
+    {
+        _wagons = await WagonService.GetAllAsync();
+    }
+
+    private void ShowAddForm()
+    {
+        _editingWagon = null;
+        _showForm = true;
+    }
+
+    private void EditWagon(Wagon wagon)
+    {
+        _editingWagon = wagon;
+        _showForm = true;
+    }
+
+    private async Task OnWagonSaved(Wagon wagon)
+    {
+        if (wagon.Id == 0)
+            await WagonService.AddAsync(wagon);
+        else
+            await WagonService.UpdateAsync(wagon);
+
+        _showForm = false;
+        _editingWagon = null;
+        await LoadWagons();
+    }
+
+    private async Task OnCancelled()
+    {
+        _showForm = false;
+        _editingWagon = null;
+    }
+
+    private async Task DeleteWagon(int id)
+    {
+        await WagonService.DeleteAsync(id);
+        await LoadWagons();
+    }
+}

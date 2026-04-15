@@ -1,0 +1,54 @@
+﻿@inject WagonTypeService WagonTypeService
+
+<EditForm Model="@_model" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label class="form-label">Name</label>
+        <InputText class="form-control" @bind-Value="_model.Name" />
+        <ValidationMessage For="@(() => _model.Name)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        @(_isEditing ? "Save" : "Add")
+    </button>
+
+    @if (_isEditing)
+    {
+        <button type="button" class="btn btn-outline-secondary ms-2" @onclick="Cancel">
+            Cancel
+        </button>
+    }
+</EditForm>
+
+@code {
+    [Parameter] public WagonType? EditModel { get; set; }
+    [Parameter] public EventCallback OnSaved { get; set; }
+    [Parameter] public EventCallback OnCancelled { get; set; }
+
+    private WagonType _model = new();
+    private bool _isEditing => EditModel is not null;
+
+    protected override void OnParametersSet()
+    {
+        _model = EditModel is not null
+            ? new WagonType { Id = EditModel.Id, Name = EditModel.Name }
+            : new WagonType();
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (_isEditing)
+            await WagonTypeService.UpdateAsync(_model);
+        else
+            await WagonTypeService.AddAsync(_model);
+
+        _model = new WagonType();
+        await OnSaved.InvokeAsync();
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancelled.InvokeAsync();
+    }
+}

@@ -1,0 +1,52 @@
+﻿@inject WagonService WagonService
+
+<div class="card h-100">
+    @if (!string.IsNullOrEmpty(Wagon.ImagePath))
+    {
+        <img src="@Wagon.ImagePath" class="card-img-top" alt="@Wagon.Name"
+             style="height: 160px; object-fit: cover;" />
+    }
+    else
+    {
+        <div class="d-flex align-items-center justify-content-center bg-secondary-subtle"
+             style="height: 160px;">
+            <span style="font-size: 48px;">🚃</span>
+        </div>
+    }
+
+    <div class="card-body">
+        <h6 class="card-title mb-1">@Wagon.Name</h6>
+        @if (!string.IsNullOrEmpty(Wagon.RollingStockNumber))
+        {
+            <small class="text-muted d-block">№ @Wagon.RollingStockNumber</small>
+        }
+        <small class="text-muted d-block">@Wagon.WagonType?.Name</small>
+        @if (Wagon.Era is not null)
+        {
+            <small class="text-muted d-block">Era @Wagon.Era.Name</small>
+        }
+        @if (!string.IsNullOrEmpty(Wagon.Color))
+        {
+            <small class="text-muted d-block">@Wagon.Color</small>
+        }
+        @if (!string.IsNullOrEmpty(Wagon.Notes))
+        {
+            <p class="card-text mt-2 small">@Wagon.Notes</p>
+        }
+    </div>
+
+    <div class="card-footer d-flex gap-2">
+        <button class="btn btn-sm btn-outline-primary w-50" @onclick="() => OnEdit.InvokeAsync(Wagon)">
+            ✏️ Edit
+        </button>
+        <button class="btn btn-sm btn-outline-danger w-50" @onclick="() => OnDelete.InvokeAsync(Wagon.Id)">
+            🗑️ Delete
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter, EditorRequired] public Wagon Wagon { get; set; } = default!;
+    [Parameter] public EventCallback<Wagon> OnEdit { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
+}

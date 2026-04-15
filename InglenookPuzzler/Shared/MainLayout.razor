@@ -3,12 +3,19 @@
 <PageTitle>InglenookPuzzler</PageTitle>
 
 <div class="container py-2 d-flex justify-content-between align-items-center">
-    <span class="fw-bold fs-5">🎬 InglenookPuzzler</span>
-    <button class="btn btn-sm btn-outline-secondary"
-            id="theme-toggle"
-            @onclick="ToggleTheme">
-        @(_isDark ? "☀️ Light" : "🌙 Dark")
-    </button>
+    @* <span class="fw-bold fs-5">🚂 Inglenook Puzzler</span> *@
+    <a href="/" class="text-decoration-none text-body fw-bold fs-5">🚂 Inglenook Puzzler</a>
+    <div class="d-flex align-items-center gap-2">
+        <div class="text-end">
+            <a href="/wagons" class="btn btn-sm btn-outline-secondary">🚃 Collection</a>
+            <a href="/settings" class="btn btn-sm btn-outline-secondary">⚙️ Settings</a>
+            <button class="btn btn-sm btn-outline-secondary"
+                    id="theme-toggle"
+                    @onclick="ToggleTheme">
+                @(_isDark ? "☀️ Light" : "🌙 Dark")
+            </button>
+        </div>
+    </div>
 </div>
 
 

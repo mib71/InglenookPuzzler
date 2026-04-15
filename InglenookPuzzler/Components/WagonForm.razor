@@ -1,0 +1,130 @@
+﻿@inject WagonTypeService WagonTypeService
+@inject EraService EraService
+@inject ImageService ImageService
+
+<EditForm Model="@_model" OnValidSubmit="HandleSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="row g-3">
+
+        <div class="col-md-6">
+            <label class="form-label">Name</label>
+            <InputText class="form-control" @bind-Value="_model.Name" />
+            <ValidationMessage For="@(() => _model.Name)" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Rolling Stock Number</label>
+            <InputText class="form-control" @bind-Value="_model.RollingStockNumber" placeholder="e.g. 50 1234" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Wagon Type</label>
+            <InputSelect class="form-select" @bind-Value="_model.WagonTypeId">
+                <option value="0">— Select type —</option>
+                @foreach (var type in _wagonTypes)
+                {
+                    <option value="@type.Id">@type.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Era</label>
+            <InputSelect class="form-select" @bind-Value="_model.EraId">
+                <option value="">— None —</option>
+                @foreach (var era in _eras)
+                {
+                    <option value="@era.Id">@era.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Color</label>
+            <InputText class="form-control" @bind-Value="_model.Color" placeholder="e.g. Red, Black" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Notes</label>
+            <InputTextArea class="form-control" @bind-Value="_model.Notes" rows="2" />
+        </div>
+
+        <div class="col-12">
+            <label class="form-label">Photo</label>
+            @if (!string.IsNullOrEmpty(_model.ImagePath))
+            {
+                <div class="mb-2">
+                    <img src="@_model.ImagePath" alt="Wagon" class="img-thumbnail" style="max-height: 120px;" />
+                </div>
+            }
+            <InputFile class="form-control" OnChange="HandleImageUpload" accept="image/*" />
+        </div>
+
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">
+            @(_isEditing ? "Save" : "Add Wagon")
+        </button>
+        @if (_isEditing)
+        {
+            <button type="button" class="btn btn-outline-secondary ms-2" @onclick="Cancel">
+                Cancel
+            </button>
+        }
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter] public Wagon? EditModel { get; set; }
+    [Parameter] public EventCallback<Wagon> OnSaved { get; set; }
+    [Parameter] public EventCallback OnCancelled { get; set; }
+
+    private Wagon _model = new();
+    private List<WagonType> _wagonTypes = new();
+    private List<Era> _eras = new();
+    private bool _isEditing => EditModel is not null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _wagonTypes = await WagonTypeService.GetAllAsync();
+        _eras = await EraService.GetAllAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        _model = EditModel is not null
+            ? new Wagon
+            {
+                Id = EditModel.Id,
+                Name = EditModel.Name,
+                WagonTypeId = EditModel.WagonTypeId,
+                EraId = EditModel.EraId,
+                Color = EditModel.Color,
+                RollingStockNumber = EditModel.RollingStockNumber,
+                ImagePath = EditModel.ImagePath,
+                Notes = EditModel.Notes
+            }
+            : new Wagon();
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024); // 5MB
+        _model.ImagePath = await ImageService.SaveImageAsync(stream, file.Name);
+    }
+
+    private async Task HandleSubmit()
+    {
+        await OnSaved.InvokeAsync(_model);
+        _model = new Wagon();
+    }
+
+    private async Task Cancel()
+    {
+        await OnCancelled.InvokeAsync();
+    }
+}

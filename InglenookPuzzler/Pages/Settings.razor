@@ -1,0 +1,138 @@
+﻿@page "/settings"
+@inject WagonTypeService WagonTypeService
+@inject EraService EraService
+
+<PageTitle>Settings</PageTitle>
+
+<h4 class="mb-4">⚙️ Settings</h4>
+
+<div class="row g-4">
+
+    <!-- VAGNTYPER -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Wagon Types</div>
+            <div class="card-body">
+                <WagonTypeForm EditModel="@_editingWagonType"
+                               OnSaved="OnWagonTypeSaved"
+                               OnCancelled="CancelWagonTypeEdit" />
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var wagonType in _wagonTypes)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>@wagonType.Name</span>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-1"
+                                @onclick ="() => EditWagonType(wagonType)">
+                                ✏️
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger"
+                                @onclick ="() => DeleteWagonType(wagonType.Id)">
+                                🗑️
+                            </button>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <!-- ERAS -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Eras</div  >
+            <div class="card-body">
+                <EraForm EditModel="@_editingEra"
+                         OnSaved="OnEraSaved"
+                         OnCancelled="CancelEraEdit" />
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var era in _eras)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <span>@era.Name</span>
+                            @if (!string.IsNullOrEmpty(era.Description))
+                            {
+                                <small class="text-muted ms-2">@era.Description</small>
+                            }
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary me-1"
+                                @onclick ="() => EditEra(era)">
+                                ✏️
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger"
+                                @onclick ="() => DeleteEra(era.Id)">
+                                🗑️
+                            </button>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+@code {
+    private List<WagonType>
+    _wagonTypes = new();
+    private List<Era>
+    _eras = new();
+    private WagonType? _editingWagonType;
+    private Era? _editingEra;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        _wagonTypes = await WagonTypeService.GetAllAsync();
+        _eras = await EraService.GetAllAsync();
+    }
+
+    // WagonType
+    private void EditWagonType(WagonType wagonType) => _editingWagonType = wagonType;
+    
+    private async Task OnWagonTypeSaved()
+    {
+        _editingWagonType = null;
+        await LoadData();
+    }
+
+    private async Task CancelWagonTypeEdit()
+    {
+        _editingWagonType = null;
+        await Task.CompletedTask;
+    }
+    private async Task DeleteWagonType(int id)
+    {
+        await WagonTypeService.DeleteAsync(id);
+        await LoadData();
+    }
+
+    // Era
+    private void EditEra(Era era) => _editingEra = era;
+
+    private async Task OnEraSaved()
+    {
+        _editingEra = null;
+        await LoadData();
+    }
+
+    private async Task CancelEraEdit()
+    {
+        _editingEra = null;
+        await Task.CompletedTask;
+    }
+    
+    private async Task DeleteEra(int id)
+    {
+        await EraService.DeleteAsync(id);
+        await LoadData();
+    }
+}

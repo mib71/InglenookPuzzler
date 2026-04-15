@@ -22,7 +22,12 @@ public class WagonTypeService(AppDbContext db)
 
     public async Task UpdateAsync(WagonType wagonType)
     {
-        _db.WagonTypes.Update(wagonType);
+        var existing = await _db.WagonTypes.FindAsync(wagonType.Id);
+        if (existing is null) return;
+
+        // EF Core tracks this automatically - no .Update() needed
+        existing.Name = wagonType.Name;
+
         await _db.SaveChangesAsync();
     }
 

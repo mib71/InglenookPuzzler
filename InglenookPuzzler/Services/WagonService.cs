@@ -29,7 +29,17 @@ public class WagonService(AppDbContext db)
 
     public async Task UpdateAsync(Wagon wagon)
     {
-        _db.Wagons.Update(wagon);
+        var existing = await _db.Wagons.FindAsync(wagon.Id);
+        if (existing is null) return;
+
+        existing.Name = wagon.Name;
+        existing.WagonTypeId = wagon.WagonTypeId;
+        existing.EraId = wagon.EraId;
+        existing.Color = wagon.Color;
+        existing.RollingStockNumber = wagon.RollingStockNumber;
+        existing.ImagePath = wagon.ImagePath;
+        existing.Notes = wagon.Notes;
+        
         await _db.SaveChangesAsync();
     }
 
