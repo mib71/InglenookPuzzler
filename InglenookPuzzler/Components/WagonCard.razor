@@ -8,8 +8,8 @@
     }
     else
     {
-        <img src="@GetDefaultImage()" alt="@Wagon.WagonType?.Name"
-             class="card-img-top" style="height: 160px; object-fit: contain; padding: 12px;" />
+        <img src="@WagonImageHelper.GetImage(Wagon)" alt="@Wagon.WagonType?.Name"
+             class="card-img-top" style="height: 160px; object-fit: contain; padding: 12px; background: var(--bs-body-bg);" />
     }
 
     <div class="card-body">
@@ -80,22 +80,5 @@
     {
         _showConfirm = false;
         await OnDelete.InvokeAsync(Wagon.Id);
-    }
-
-    private string GetDefaultImage()
-    {
-        return Wagon.WagonType?.Name.ToLower() switch
-        {
-            "plank wagon" => "images/defaults/plank-wagon.png",
-            "goods van" => "images/defaults/goods-van.png",
-            "ventilated van" => "images/defaults/ventilated-van.png",
-            "tank wagon" => "images/defaults/tank-wagon.png",
-            "brake van" => "images/defaults/brake-van.png",
-            "hopper wagon" => "images/defaults/hopper-wagon.png",
-            "cattle wagon" => "images/defaults/cattle-wagon.png",
-            "flat wagon" => "images/defaults/flat-wagon.png",
-            "coal wagon" => "images/defaults/coal-wagon.png",
-            _ => "images/defaults/default.png"
-        };
-    }
+    }    
 }

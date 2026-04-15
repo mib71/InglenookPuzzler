@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InglenookPuzzler.Services;
 
-public class WagonService(AppDbContext db)
+public class WagonService(AppDbContext db, ImageService imageService)
 {
     private readonly AppDbContext _db = db;
+    private readonly ImageService _imageService = imageService;
 
     public async Task<List<Wagon>> GetAllAsync()
         => await _db.Wagons
@@ -48,6 +49,7 @@ public class WagonService(AppDbContext db)
         var wagon = await _db.Wagons.FindAsync(id);
         if (wagon is not null)
         {
+            _imageService.DeleteImage(wagon.ImagePath);
             _db.Wagons.Remove(wagon);
             await _db.SaveChangesAsync();
         }

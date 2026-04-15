@@ -36,7 +36,7 @@
                 {
                     var wagon = GetWagon(wagonId);
                     <div class="text-center">
-                        <img src="@GetWagonImage(wagon)" style="height:60px;" />
+                        <img src="@WagonImageHelper.GetImage(wagon)" style="height:60px;" />
                         <div style="font-size:11px;">@wagon?.Name</div>
                     </div>
                 }
@@ -63,7 +63,7 @@
                 {
                     var wagon = GetWagon(wagonId);
                     <div class="text-center">
-                        <img src="@GetWagonImage(wagon)" style="height:70px;" />
+                        <img src="@WagonImageHelper.GetImage(wagon)" style="height:70px;" />
                         <div style="font-size:11px;">@wagon?.Name</div>
                     </div>
                 }
@@ -124,7 +124,7 @@
                     {
                         var wagon = GetWagon(wagonId);
                         <div class="text-center">
-                            <img src="@GetWagonImage(wagon)" style="height:70px;" />
+                            <img src="@WagonImageHelper.GetImage(wagon)" style="height:70px;" />
                             <div style="font-size:11px;">@wagon?.Name</div>
                         </div>
                     }
@@ -178,24 +178,4 @@
 
     private Wagon? GetWagon(int id)
         => _wagons.FirstOrDefault(w => w.Id == id);
-
-    private string GetWagonImage(Wagon? wagon)
-    {
-        if (wagon is null) return "images/defaults/default.svg";
-        if (!string.IsNullOrEmpty(wagon.ImagePath)) return wagon.ImagePath;
-
-        return wagon.WagonType?.Name.ToLower() switch
-        {
-            "plank wagon" => "images/defaults/plank-wagon.png",
-            "goods van" => "images/defaults/goods-van.png",
-            "ventilated van" => "images/defaults/ventilated-van.png",
-            "tank wagon" => "images/defaults/tank-wagon.png",
-            "brake van" => "images/defaults/brake-van.png",
-            "hopper wagon" => "images/defaults/hopper-wagon.png",
-            "cattle wagon" => "images/defaults/cattle-wagon.png",
-            "flat wagon" => "images/defaults/flat-wagon.png",
-            "coal wagon" => "images/defaults/coal-wagon.png",
-            _ => "images/defaults/default.svg"
-        };
-    }
 }
