@@ -3,15 +3,13 @@
 <div class="card h-100">
     @if (!string.IsNullOrEmpty(Wagon.ImagePath))
     {
-        <img src="@Wagon.ImagePath" class="card-img-top" alt="@Wagon.Name"
-             style="height: 160px; object-fit: cover;" />
+        <img src="@Wagon.ImagePath" alt="@Wagon.Name"
+             class="card-img-top" style="height: 160px; object-fit: cover;" />
     }
     else
     {
-        <div class="d-flex align-items-center justify-content-center bg-secondary-subtle"
-             style="height: 160px;">
-            <span style="font-size: 48px;">🚃</span>
-        </div>
+        <img src="@GetDefaultImage()" alt="@Wagon.WagonType?.Name"
+             class="card-img-top" style="height: 160px; object-fit: contain; padding: 12px;" />
     }
 
     <div class="card-body">
@@ -49,4 +47,21 @@
     [Parameter, EditorRequired] public Wagon Wagon { get; set; } = default!;
     [Parameter] public EventCallback<Wagon> OnEdit { get; set; }
     [Parameter] public EventCallback<int> OnDelete { get; set; }
+
+    private string GetDefaultImage()
+    {
+        return Wagon.WagonType?.Name.ToLower() switch
+        {
+            "plank wagon" => "images/defaults/plank-wagon.svg",
+            "goods van" => "images/defaults/goods-van.svg",
+            "ventilated van" => "images/defaults/ventilated-van.svg",
+            "tank wagon" => "images/defaults/tank-wagon.svg",
+            "brake van" => "images/defaults/brake-van.svg",
+            "hopper wagon" => "images/defaults/hopper-wagon.svg",
+            "cattle wagon" => "images/defaults/cattle-wagon.svg",
+            "flat wagon" => "images/defaults/flat-wagon.svg",
+            "coal wagon" => "images/defaults/coal-wagon.svg",
+            _ => "images/defaults/default.svg"
+        };
+    }
 }

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 120">
+  <!-- Chassis -->
+  <rect x="10" y="88" width="140" height="7" rx="1" fill="#2a2a2a"/>
+  <!-- Body -->
+  <rect x="18" y="35" width="124" height="53" rx="2" fill="#8b7355" stroke="#5a4a3a" stroke-width="2"/>
+  <!-- Roof -->
+  <rect x="16" y="30" width="128" height="9" rx="2" fill="#6a5a3a" stroke="#5a4a3a" stroke-width="1.5"/>
+  <!-- Horizontal slats -->
+  <rect x="20" y="42" width="120" height="4" fill="#7a6345"/>
+  <rect x="20" y="50" width="120" height="4" fill="#7a6345"/>
+  <rect x="20" y="58" width="120" height="4" fill="#7a6345"/>
+  <rect x="20" y="66" width="120" height="4" fill="#7a6345"/>
+  <rect x="20" y="74" width="120" height="4" fill="#7a6345"/>
+  <!-- Vertical posts -->
+  <rect x="18" y="35" width="4" height="53" fill="#5a4a3a"/>
+  <rect x="50" y="35" width="3" height="53" fill="#5a4a3a"/>
+  <rect x="78" y="35" width="3" height="53" fill="#5a4a3a"/>
+  <rect x="107" y="35" width="3" height="53" fill="#5a4a3a"/>
+  <rect x="138" y="35" width="4" height="53" fill="#5a4a3a"/>
+  <!-- Door -->
+  <rect x="53" y="37" width="25" height="49" rx="1" fill="#7a6345" stroke="#5a4a3a" stroke-width="1.5"/>
+  <circle cx="72" cy="62" r="3" fill="#3a2a1a"/>
+  <!-- Wheels -->
+  <circle cx="38" cy="100" r="9" fill="#1a1a1a" stroke="#444" stroke-width="2"/>
+  <circle cx="38" cy="100" r="4" fill="#444"/>
+  <circle cx="122" cy="100" r="9" fill="#1a1a1a" stroke="#444" stroke-width="2"/>
+  <circle cx="122" cy="100" r="4" fill="#444"/>
+  <!-- Buffers -->
+  <rect x="4" y="90" width="7" height="5" rx="1" fill="#666"/>
+  <rect x="149" y="90" width="7" height="5" rx="1" fill="#666"/>
+</svg>
