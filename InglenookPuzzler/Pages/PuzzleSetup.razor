@@ -2,6 +2,8 @@
 @inject PuzzleGenerator PuzzleGenerator
 @inject PuzzleEngine PuzzleEngine
 @inject NavigationManager Nav
+@inject WagonTypeService WagonTypeService
+@inject EraService EraService
 
 <PageTitle>Puzzle Setup</PageTitle>
 
@@ -12,7 +14,7 @@
     <div class="alert alert-danger">@_error</div>
 }
 
-<div class="card" style="max-width: 480px;">
+<div class="card" style="max-width: 600px;">
     <div class="card-header">Configuration</div>
     <div class="card-body">
 
@@ -43,26 +45,92 @@
             </div>
         </div>
 
-        @* <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" @bind="_config.TimedMode" id="timedMode" />
-            <label class="form-check-label" for="timedMode">Timed mode</label>
-        </div> *@
+        <!-- ERA FILTER -->
+        @if (_eras.Any())
+        {
+            <div class="mb-3">
+                <label class="form-label">Eras <small class="text-muted">(leave all unchecked to use any)</small></label>
+                <div class="d-flex gap-3 flex-wrap">
+                    @foreach (var era in _eras)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                   id="era_@era.Id"
+                                   checked="@_selectedEraIds.Contains(era.Id)"
+                                   @onchange="e => ToggleEra(era.Id, (bool)e.Value!)" />
+                            <label class="form-check-label" for="era_@era.Id">
+                                @era.Name @if (!string.IsNullOrEmpty(era.Description)) {
+                                <small class="text-muted">— @era.Description</small>
+                            }
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 
-        <button class="btn btn-primary w-100" @onclick="StartPuzzle" disabled="@_loading">
-            @if (_loading)
-            {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-            }
-            🎲 Generate Puzzle
-        </button>
+    <!-- WAGON TYPE FILTER -->
+    @if (_wagonTypes.Any())
+    {
+        <div class="mb-3">
+            <label class="form-label">Wagon Types <small class="text-muted">(leave all unchecked to use any)</small></label>
+            <div class="d-flex gap-3 flex-wrap">
+                @foreach (var type in _wagonTypes)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               id="type_@type.Id"
+                               checked="@_selectedTypeIds.Contains(type.Id)"
+                               @onchange="e => ToggleType(type.Id, (bool)e.Value!)" />
+                        <label class="form-check-label" for="type_@type.Id">@type.Name</label>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" @bind="_config.TimedMode" id="timedMode" />
+        <label class="form-check-label" for="timedMode">Timed mode</label>
     </div>
+
+    <button class="btn btn-primary w-100" @onclick="StartPuzzle" disabled="@_loading">
+        @if (_loading)
+        {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+        }
+        🎲 Generate Puzzle
+    </button>
+
+</div>
 </div>
 
 @code {
     private PuzzleConfig _config = new();
     private string? _error;
     private bool _loading;
+    private List<Era> _eras = new();
+    private List<WagonType> _wagonTypes = new();
+    private HashSet<int> _selectedEraIds = new();
+    private HashSet<int> _selectedTypeIds = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _eras = await EraService.GetAllAsync();
+        _wagonTypes = await WagonTypeService.GetAllAsync();
+    }
+
+    private void ToggleEra(int id, bool isChecked)
+    {
+        if (isChecked) _selectedEraIds.Add(id);
+        else _selectedEraIds.Remove(id);
+    }
+
+    private void ToggleType(int id, bool isChecked)
+    {
+        if (isChecked) _selectedTypeIds.Add(id);
+        else _selectedTypeIds.Remove(id);
+    }
 
     private async Task StartPuzzle()
     {
@@ -71,7 +139,10 @@
 
         try
         {
-            var session = await PuzzleGenerator.GenerateAsync(_config);
+            var session = await PuzzleGenerator.GenerateAsync(
+                _config,
+                _selectedEraIds.Count > 0 ? _selectedEraIds : null,
+                _selectedTypeIds.Count > 0 ? _selectedTypeIds : null);
 
             PuzzleEngine.LoadSession(session);
             Nav.NavigateTo("/puzzle/play");

@@ -9,13 +9,27 @@ public class PuzzleGenerator(WagonService wagonService)
     private readonly WagonService _wagonService = wagonService;
     private readonly Random _random = new();
 
-    public async Task<PuzzleSession> GenerateAsync(PuzzleConfig config)
+    public async Task<PuzzleSession> GenerateAsync(
+        PuzzleConfig config,
+        HashSet<int>? eraIds = null,
+        HashSet<int>? typeIds = null)
     {
         var allWagons = await _wagonService.GetAllAsync();
 
+        // Apply filters
+        if (eraIds is not null && eraIds.Any())
+            allWagons = allWagons
+                .Where(w => w.EraId.HasValue && eraIds.Contains(w.EraId.Value))
+                .ToList();
+
+        if (typeIds is not null && typeIds.Any())
+            allWagons = allWagons
+                .Where(w => typeIds.Contains(w.WagonTypeId))
+                .ToList();
+
         if (allWagons.Count < config.TotalWagons)
             throw new InvalidOperationException(
-                $"Not enough wagons in collection. Need {config.TotalWagons}, have {allWagons.Count}.");
+                $"Not enough wagons matching the filter. Need {config.TotalWagons}, found {allWagons.Count}.");
 
         // Pick exactly TotalWagons random wagons
         var selected = allWagons
@@ -75,7 +89,7 @@ public class PuzzleGenerator(WagonService wagonService)
         // If a Brake Van is among the goal wagons, it must be last
         var brakeVan = goalWagons.FirstOrDefault(w =>
             w.WagonType?.Name.Equals("Brake Van", StringComparison.OrdinalIgnoreCase) == true);
-        
+
         if (brakeVan is not null)
         {
             goalWagons.Remove(brakeVan);
@@ -85,9 +99,6 @@ public class PuzzleGenerator(WagonService wagonService)
         // These must end up on track A in exactly this order
         foreach (var wagon in goalWagons)
             tracks[0].WagonIds.Add(wagon.Id);
-
-        // Remaining 3 wagons can be anywhere — we don't care where
-        // PuzzleEngine validates only track A order
 
         return tracks;
     }
