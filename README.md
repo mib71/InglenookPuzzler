@@ -43,6 +43,14 @@ Simple rules. Surprisingly deep strategy. Over 40,000 possible combinations.
 
 ---
 
+## Screenshots
+
+![Dashboard](docs/screenshots/dashboard.png)
+![Collection](docs/screenshots/collection.png)
+![Puzzle](docs/screenshots/puzzle.png)
+
+---
+
 ## Stack
 
 ![C#](https://img.shields.io/badge/C%23-239120?style=flat-square&logo=csharp&logoColor=white)
