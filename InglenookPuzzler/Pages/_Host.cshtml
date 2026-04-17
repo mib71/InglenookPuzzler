@@ -56,14 +56,16 @@
 
         window.themeInterop = {
             toggleTheme: () => {
-            const current = document.documentElement.getAttribute('data-bs-theme') ?? 'light';
-            const next = current === 'dark' ? 'light' : 'dark';
-            localStorage.setItem('theme', next);
-            applyTheme(next);
-        },
-        getCurrentTheme: () => {
-            return document.documentElement.getAttribute('data-bs-theme') ?? getSavedTheme();
-        }
+                const current = document.documentElement.getAttribute('data-bs-theme') ?? 'light';
+                const next = current === 'dark' ? 'light' : 'dark';
+
+                localStorage.setItem('theme', next);
+                applyTheme(next);
+            },
+            
+            getCurrentTheme: () => {
+                return document.documentElement.getAttribute('data-bs-theme') ?? getSavedTheme();
+            }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -71,6 +73,12 @@
                 applyTheme(getSavedTheme());
             });
         });
+
+        window.playSound = (url) => {
+            const audio = new Audio(url);
+            audio.volume = 0.02;
+            audio.play().catch(() => {});
+        };
     </script>
 </body>
 </html>

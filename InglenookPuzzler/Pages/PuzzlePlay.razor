@@ -135,9 +135,9 @@
 </div>
 
 @code {
-    private List<Wagon> _wagons = new();
-
+    [Inject] IJSRuntime JS { get; set; } = default!;
     [Inject] WagonService WagonService { get; set; } = default!;
+    private List<Wagon> _wagons = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -148,6 +148,12 @@
         }
 
         _wagons = await WagonService.GetAllAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JS.InvokeVoidAsync("playSound", "/sounds/train.mp3");
     }
 
     private async Task MoveTo(string from, string to, int count)

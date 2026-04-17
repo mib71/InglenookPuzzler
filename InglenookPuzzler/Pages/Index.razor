@@ -117,10 +117,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="border rounded p-3 text-center">
-                            <div class="fs-1 fw-bold">@_averageMoves</div>
-                            <div class="text-muted small">Average moves</div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="fs-1 fw-bold">@_averageMoves</div>
+                                <div class="text-muted small">Average moves</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="fs-1 fw-bold">@_streak 🔥</div>
+                                <div class="text-muted small">Current streak (days)</div>
+                            </div>
                         </div>
                     </div>
                     @if (_lastSolved is not null)
@@ -130,11 +138,11 @@
                             — @_lastSolved.MoveCount moves
                         </div>
                     }
+                    
                 }
             </div>
         </div>
     </div>
-
 </div>
 
 @code {
@@ -142,12 +150,12 @@
     private List<(string Type, int Count)> _wagonsByType = new();
     private bool _loadingCollection = true;
     private double _averageMoves;
-
     private int _totalSolved;
     private int _bestMoves;
     private PuzzleSession? _lastSolved;
     private bool _loadingPuzzle = true;
-
+    private int _streak;
+    
     protected override async Task OnInitializedAsync()
     {
         var wagons = await WagonService.GetAllAsync();
@@ -165,5 +173,7 @@
         _lastSolved = sessions.FirstOrDefault();
         _loadingPuzzle = false;
         _averageMoves = sessions.Any() ? Math.Round(sessions.Average(s => s.MoveCount), 1) : 0;
-    }
+
+        _streak = await PuzzleSessionService.GetCurrentStreakAsync();
+    }    
 }
