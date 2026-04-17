@@ -96,7 +96,6 @@ Update `appsettings.json` with your SQL Server instance:
 |---|---|
 | **V1** ✅ | Wagon collection, image upload, digital puzzle, move counter, win detection, session saving |
 | **V2** | Print card for physical play, highscores |
-| **V3** | Timed mode, export/import collection |
 
 ---
 
