@@ -1,6 +1,7 @@
 using InglenookPuzzler.Data;
 using InglenookPuzzler.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,13 +27,18 @@ builder.Services.AddScoped<PuzzleSessionService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
 
+// Only lock to port 5000 in release — dev uses Visual Studio's port
+if (!builder.Environment.IsDevelopment())
+{
+    builder.WebHost.UseUrls("http://localhost:5000");
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -65,6 +71,18 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
     await DbSeeder.SeedAsync(db);
+}
+
+// Only open browser automatically in release
+if (!app.Environment.IsDevelopment())
+{
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        Process.Start(new ProcessStartInfo("http://localhost:5000")
+        {
+            UseShellExecute = true
+        });
+    });
 }
 
 app.Run();
