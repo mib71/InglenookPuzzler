@@ -15,10 +15,10 @@ namespace InglenookPuzzler.Migrations
                 name: "Eras",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,18 +29,20 @@ namespace InglenookPuzzler.Migrations
                 name: "PuzzleSessions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StartState = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GoalState = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MoveCount = table.Column<int>(type: "int", nullable: false),
-                    IsCompleted = table.Column<bool>(type: "bit", nullable: false),
-                    Config_TrackACapacity = table.Column<int>(type: "int", nullable: false),
-                    Config_TrackBCapacity = table.Column<int>(type: "int", nullable: false),
-                    Config_TrackCCapacity = table.Column<int>(type: "int", nullable: false),
-                    Config_WagonCount = table.Column<int>(type: "int", nullable: false),
-                    Config_TimedMode = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StartState = table.Column<string>(type: "TEXT", nullable: false),
+                    GoalState = table.Column<string>(type: "TEXT", nullable: false),
+                    MoveCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Config_TrackACapacity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Config_TrackBCapacity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Config_TrackCCapacity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Config_HeadshuntCapacity = table.Column<int>(type: "INTEGER", nullable: false),
+                    Config_TotalWagons = table.Column<int>(type: "INTEGER", nullable: false),
+                    Config_GoalWagons = table.Column<int>(type: "INTEGER", nullable: false),
+                    Config_TimedMode = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,9 +53,9 @@ namespace InglenookPuzzler.Migrations
                 name: "WagonTypes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,14 +66,15 @@ namespace InglenookPuzzler.Migrations
                 name: "Wagons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    WagonTypeId = table.Column<int>(type: "int", nullable: false),
-                    EraId = table.Column<int>(type: "int", nullable: true),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", nullable: false),
+                    WagonTypeId = table.Column<int>(type: "INTEGER", nullable: false),
+                    EraId = table.Column<int>(type: "INTEGER", nullable: true),
+                    RollingStockNumber = table.Column<string>(type: "TEXT", maxLength: 15, nullable: true),
+                    Color = table.Column<string>(type: "TEXT", maxLength: 15, nullable: true),
+                    ImagePath = table.Column<string>(type: "TEXT", nullable: true),
+                    Notes = table.Column<string>(type: "TEXT", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {

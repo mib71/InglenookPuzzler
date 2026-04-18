@@ -3,13 +3,19 @@ using SixLabors.ImageSharp.Processing;
 
 namespace InglenookPuzzler.Services;
 
-public class ImageService(IWebHostEnvironment env)
+public class ImageService
 {
-    private readonly IWebHostEnvironment _env = env;
+    
+    private string GetImagesFolder() =>
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "InglenookPuzzler", "images", "wagons"
+        );
+
 
     public async Task<string> SaveImageAsync(Stream imageStream, string fileName)
     {
-        var imagesFolder = Path.Combine(_env.WebRootPath, "images", "wagons");
+        var imagesFolder = GetImagesFolder();
 
         if (!Directory.Exists(imagesFolder))
             Directory.CreateDirectory(imagesFolder);
@@ -31,7 +37,7 @@ public class ImageService(IWebHostEnvironment env)
 
         await image.SaveAsJpegAsync(filePath);
 
-        return $"images/wagons/{uniqueFileName}";
+        return $"wagon-images/{uniqueFileName}";
     }
 
     public void DeleteImage(string? imagePath)
@@ -39,7 +45,8 @@ public class ImageService(IWebHostEnvironment env)
         if (string.IsNullOrEmpty(imagePath))
             return;
 
-        var fullPath = Path.Combine(_env.WebRootPath, imagePath);
+        var fileName = Path.GetFileName(imagePath);
+        var fullPath = Path.Combine(GetImagesFolder(), fileName);
 
         if (File.Exists(fullPath))
             File.Delete(fullPath);

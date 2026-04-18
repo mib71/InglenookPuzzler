@@ -4,22 +4,27 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var appData = Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+    "InglenookPuzzler");
+Directory.CreateDirectory(appData);
+var dbPath = Path.Combine(appData, "inglenook.db");
+
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-//builder.Services.AddDbContext<AppDbContext>(options =>
-//    options.UseSqlite("Data Source=inglenook.db"));
+builder.Services.AddSingleton<ImageService>();
 
 builder.Services.AddScoped<WagonTypeService>();
 builder.Services.AddScoped<EraService>();
 builder.Services.AddScoped<WagonService>();
-builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<PuzzleGenerator>();
 builder.Services.AddScoped<PuzzleEngine>();
 builder.Services.AddScoped<PuzzleSessionService>();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite($"Data Source={dbPath}"));
 
 var app = builder.Build();
 
@@ -38,6 +43,21 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapBlazorHub();
+
+app.MapGet("/wagon-images/{fileName}", (string fileName) =>
+{
+    var folder = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "InglenookPuzzler", "images", "wagons");
+
+    var fullPath = Path.Combine(folder, fileName);
+
+    if (!File.Exists(fullPath))
+        return Results.NotFound();
+
+    return Results.File(fullPath, "image/jpeg");
+});
+
 app.MapFallbackToPage("/_Host");
 
 using (var scope = app.Services.CreateScope())
