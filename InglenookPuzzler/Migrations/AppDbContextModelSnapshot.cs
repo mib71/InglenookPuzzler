@@ -24,10 +24,12 @@ namespace InglenookPuzzler.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -81,6 +83,7 @@ namespace InglenookPuzzler.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(5)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Notes")
@@ -88,7 +91,7 @@ namespace InglenookPuzzler.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RollingStockNumber")
-                        .HasMaxLength(15)
+                        .HasMaxLength(12)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("WagonTypeId")
@@ -111,6 +114,7 @@ namespace InglenookPuzzler.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

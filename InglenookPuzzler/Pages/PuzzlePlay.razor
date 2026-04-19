@@ -24,7 +24,7 @@
 <!-- GOAL -->
 <div class="card mb-4">
     <div class="card-header">🎯 Goal — Form this train on Track A (in order, left to right)</div>
-    <div class="card-body">
+    <div class="card-body py-2">
         <div class="d-flex gap-2 flex-wrap">
             @if (_wagons.Count == 0)
             {
@@ -36,8 +36,12 @@
                 {
                     var wagon = GetWagon(wagonId);
                     <div class="text-center">
-                        <img src="@WagonImageHelper.GetImage(wagon)" style="height:60px;" />
-                        <div style="font-size:11px;">@wagon?.Name</div>
+                        <img src="@WagonImageHelper.GetImage(wagon)" style="height:60px; display:block;" class="mb-0" />
+                        <div class="small mb-0 p-0">@wagon?.Name</div>
+                        @if (!string.IsNullOrEmpty(wagon?.RollingStockNumber))
+                        {
+                            <div class="small mb-0 p-0 text-muted">@wagon.RollingStockNumber</div>
+                        }
                     </div>
                 }
             }
@@ -51,7 +55,7 @@
         <span>🚂 Headshunt (H) — @GetTrack("H").WagonIds.Count / @GetTrack("H").Capacity wagons</span>
         <small class="text-muted">Loco buffer — move wagons via here</small>
     </div>
-    <div class="card-body">
+    <div class="card-body py-2">
         <div class="d-flex gap-2 flex-wrap align-items-center">
             @if (GetTrack("H").WagonIds.Count == 0)
             {
@@ -63,8 +67,12 @@
                 {
                     var wagon = GetWagon(wagonId);
                     <div class="text-center">
-                        <img src="@WagonImageHelper.GetImage(wagon)" style="height:70px;" />
-                        <div style="font-size:11px;">@wagon?.Name</div>
+                        <img src="@WagonImageHelper.GetImage(wagon)" style="height:60px; display:block;" class="mb-0" />
+                        <div class="small mb-0 p-0">@wagon?.Name</div>
+                        @if (!string.IsNullOrEmpty(wagon?.RollingStockNumber))
+                        {
+                            <div class="small mb-0 p-0 text-muted">@wagon.RollingStockNumber</div>
+                        }
                     </div>
                 }
                 <div class="ms-auto d-flex gap-2 flex-wrap">
@@ -114,7 +122,7 @@
                     </div>
                 }
             </div>
-            <div class="card-body">
+            <div class="card-body py-2">
                 <div class="d-flex gap-2 flex-wrap">
                     @if (track.WagonIds.Count == 0)
                     {
@@ -124,8 +132,12 @@
                     {
                         var wagon = GetWagon(wagonId);
                         <div class="text-center">
-                            <img src="@WagonImageHelper.GetImage(wagon)" style="height:70px;" />
-                            <div style="font-size:11px;">@wagon?.Name</div>
+                            <img src="@WagonImageHelper.GetImage(wagon)" style="height:60px; display:block;" class="mb-0" />
+                            <div class="small mb-0 p-0">@wagon?.Name</div>
+                            @if (!string.IsNullOrEmpty(wagon?.RollingStockNumber))
+                            {
+                                <div class="small mb-0 p-0 text-muted">@wagon.RollingStockNumber</div>
+                            }
                         </div>
                     }
                 </div>

@@ -16,6 +16,7 @@
         <div class="col-md-6">
             <label class="form-label">Rolling Stock Number</label>
             <InputText class="form-control" @bind-Value="_model.RollingStockNumber" placeholder="e.g. 50 1234" />
+            <ValidationMessage For="@(() => _model.RollingStockNumber)" />
         </div>
 
         <div class="col-md-6">

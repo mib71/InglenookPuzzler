@@ -12,6 +12,16 @@
     </button>
 </div>
 
+@if (_wagons.Count < 8)
+{
+    <div class="alert alert-info d-flex justify-content-between align-items-center">
+        <span>You need at least 8 wagons to generate a puzzle. Want a sample set to get started?</span>
+        <button class="btn btn-sm btn-outline-primary ms-3" @onclick="GenerateSampleWagons">
+            Generate sample wagons
+        </button>
+    </div>
+}
+
 @if (_showForm)
 {
     <div class="card mb-4">
@@ -145,6 +155,12 @@ else
     private async Task DeleteWagon(int id)
     {
         await WagonService.DeleteAsync(id);
+        await LoadWagons();
+    }
+
+    private async Task GenerateSampleWagons()
+    {
+        await WagonService.GenerateSampleWagonsAsync();
         await LoadWagons();
     }
 }

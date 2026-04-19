@@ -13,7 +13,7 @@
     }
 
     <div class="card-body">
-        <h6 class="card-title mb-1">@Wagon.Name</h6>
+        <h6 class="card-title mb-1">@Wagon.Name @Wagon.RollingStockNumber</h6>
         @if (!string.IsNullOrEmpty(Wagon.RollingStockNumber))
         {
             <small class="text-muted d-block">№ @Wagon.RollingStockNumber</small>
