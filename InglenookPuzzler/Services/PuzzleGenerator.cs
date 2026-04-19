@@ -93,7 +93,7 @@ public class PuzzleGenerator(WagonService wagonService)
         if (brakeVan is not null)
         {
             goalWagons.Remove(brakeVan);
-            goalWagons.Add(brakeVan);
+            goalWagons.Insert(0, brakeVan);
         }
 
         // These must end up on track A in exactly this order
