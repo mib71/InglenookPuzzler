@@ -49,6 +49,7 @@ Simple rules. Surprisingly deep strategy. Over 40,000 possible combinations. [Le
 ![Dashboard](docs/screenshots/dashboard.png)
 ![Collection](docs/screenshots/collection.png)
 ![Puzzle](docs/screenshots/puzzle.png)
+![PDF-file](docs/screenshots/pdf_en.png)
 
 ---
 
