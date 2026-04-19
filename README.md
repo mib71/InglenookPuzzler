@@ -94,8 +94,8 @@ The database is created and seeded automatically on first run — no manual migr
 
 | Version | Features |
 |---|---|
-| **V1** ✅ | Wagon collection, image upload, digital puzzle, move counter, win detection, session saving |
-| **V2** | Print card for physical play, and maby more |
+| **V1.0** ✅ | Wagon collection, image upload, digital puzzle, move counter, win detection, session saving |
+| **V1.1** ✅ | Print card or save PDF for physical play |
 
 ---
 
