@@ -3,7 +3,7 @@
 @inject NavigationManager Nav
 @inject PuzzleSessionService PuzzleSessionService
 
-<PageTitle>Puzzle</PageTitle>
+<PageTitle>Puzzle_@DateTime.Now.ToString("yyyyMMdd_HHmm")</PageTitle>
 
 @if (PuzzleEngine.IsCompleted)
 {
@@ -14,8 +14,11 @@
     </div>
 }
 
-<div class="d-flex justify-content-end align-items-center mb-4 gap-2">
+<div class="d-flex justify-content-end align-items-center mb-4 gap-2 no-print">
     <div class="d-flex align-items-center gap-3">
+        <div class="text-muted small mt-1">
+            🖨️ Ctrl+P to export puzzle as PDF
+        </div>
         <span class="badge bg-secondary fs-6">Moves: @PuzzleEngine.MoveCount</span>
         <a href="/puzzle/setup" class="btn btn-sm btn-outline-secondary">↩ New Puzzle</a>
     </div>

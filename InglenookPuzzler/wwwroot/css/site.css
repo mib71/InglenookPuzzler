@@ -91,3 +91,14 @@ a, .btn-link {
     background-color: #e6a817;
     border-color: #e6a817;
 }
+
+@media print {
+    .navbar,
+    .btn,
+    .border-warning,
+    .badge,
+    .no-print,
+    .d-flex.justify-content-end {
+        display: none !important;
+    }
+}
