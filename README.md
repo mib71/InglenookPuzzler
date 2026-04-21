@@ -44,12 +44,17 @@ Simple rules. Surprisingly deep strategy. Over 40,000 possible combinations. [Le
 
 ---
 
-## Screenshots
-
+**Dashboard — collection overview and puzzle stats**
 ![Dashboard](docs/screenshots/dashboard.png)
+
+**Wagon collection — your own rolling stock with photos**
 ![Collection](docs/screenshots/collection.png)
+
+**Puzzle — play with your own wagons using correct headshunt rules**
 ![Puzzle](docs/screenshots/puzzle.png)
-![PDF-file](docs/screenshots/pdf_en.png)
+
+**Print / PDF export — generate a puzzle card for physical play on your layout**
+![PDF-file](docs/screenshots/pdf_en.png) 
 
 ---
 
