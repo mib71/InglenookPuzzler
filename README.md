@@ -44,12 +44,17 @@ Simple rules. Surprisingly deep strategy. Over 40,000 possible combinations. [Le
 
 ---
 
-## Screenshots
-
+**Dashboard — collection overview and puzzle stats**
 ![Dashboard](docs/screenshots/dashboard.png)
+
+**Wagon collection — your own rolling stock with photos**
 ![Collection](docs/screenshots/collection.png)
+
+**Puzzle — play with your own wagons using correct headshunt rules**
 ![Puzzle](docs/screenshots/puzzle.png)
-![PDF-file](docs/screenshots/pdf_en.png)
+
+**Print / PDF export — generate a puzzle card for physical play on your layout**
+![PDF-file](docs/screenshots/pdf_en.png) 
 
 ---
 
@@ -60,8 +65,6 @@ Simple rules. Surprisingly deep strategy. Over 40,000 possible combinations. [Le
 ![Blazor](https://img.shields.io/badge/Blazor-512BD4?style=flat-square&logo=blazor&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
 ![EF Core](https://img.shields.io/badge/EF_Core-512BD4?style=flat-square&logo=dotnet&logoColor=white)
-![Visual Studio](https://img.shields.io/badge/Visual_Studio-5C2D91?style=flat-square&logo=visualstudio&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
 
 ---
 
@@ -94,8 +97,8 @@ The database is created and seeded automatically on first run — no manual migr
 
 | Version | Features |
 |---|---|
-| **V1.0** ✅ | Wagon collection, image upload, digital puzzle, move counter, win detection, session saving |
 | **V1.1** ✅ | Print card or save PDF for physical play |
+| **V1.0** ✅ | Wagon collection, image upload, digital puzzle, move counter, win detection, session saving |
 
 ---
 
