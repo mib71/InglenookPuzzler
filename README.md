@@ -109,6 +109,6 @@ The database is created and seeded automatically on first run — no manual migr
 
 ## About
 
-Built by [mib71](https://github.com/mib71) — a .NET backend dev from Sweden who also happens to collect model railways.
+Built by [mib71](https://github.com/mib71) — a .NET backend dev from Sweden who also happens to like model railways.
 
 🌐 [bifrostpixel.com](https://www.bifrostpixel.com)

@@ -34,14 +34,17 @@
             <div class="col-4">
                 <label class="form-label">Track A</label>
                 <input type="number" class="form-control" @bind="_config.TrackACapacity" min="3" max="7" />
+                <small class="text-muted">Classic Inglenook uses 5</small>
             </div>
             <div class="col-4">
                 <label class="form-label">Track B</label>
                 <input type="number" class="form-control" @bind="_config.TrackBCapacity" min="2" max="5" />
+                <small class="text-muted">Classic Inglenook uses 3</small>
             </div>
             <div class="col-4">
                 <label class="form-label">Track C</label>
                 <input type="number" class="form-control" @bind="_config.TrackCCapacity" min="2" max="5" />
+                <small class="text-muted">Classic Inglenook uses 3</small>
             </div>
         </div>
 
@@ -89,10 +92,10 @@
         </div>
     }
 
-    <div class="form-check mb-3">
+    @* <div class="form-check mb-3">
         <input class="form-check-input" type="checkbox" @bind="_config.TimedMode" id="timedMode" />
         <label class="form-check-label" for="timedMode">Timed mode</label>
-    </div>
+    </div> *@
 
     <button class="btn btn-primary w-100" @onclick="StartPuzzle" disabled="@_loading">
         @if (_loading)
